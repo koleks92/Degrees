@@ -91,9 +91,45 @@ def shortest_path(source, target):
 
     If no possible path, returns None.
     """
+    # Start node
+    start_node = Node(source, None, None)
 
-    # TODO
-    raise NotImplementedError
+    # Create a QueueFrontier (BFS)
+    queue_frontier = QueueFrontier()
+
+    # Add starting node
+    queue_frontier.add(start_node)
+
+    checked = set()
+
+    # Go while frontier is not empty
+    while queue_frontier.empty() == False:
+        current = queue_frontier.remove()
+
+        # If checks the target, create a path
+        if current.state == target:
+            path = []
+            while current.parent is not None:
+                path.insert(0, (current.action, current.state))
+                current = current.parent
+            return path
+        
+        # Add to checked people
+        checked.add(current.state)
+
+        neighbors = neighbors_for_person(current.state)
+        
+        # Loop through neighbors 
+        for movie, person in neighbors:
+            # If not in frontier
+            if not queue_frontier.contains_state(person):
+                # In not chekced already
+                if person not in checked:
+                    neighbor_node = Node(person, current, movie)
+                    queue_frontier.add(neighbor_node)
+        
+    # Return none if no connections 
+    return None
 
 
 def person_id_for_name(name):
